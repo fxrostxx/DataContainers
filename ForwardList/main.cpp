@@ -8,43 +8,46 @@ class Element
 private:
 	int Data;
 	Element* pNext;
-	static int count;
 
 public:
 	Element(int Data, Element* pNext = nullptr)
 	{
 		this->Data = Data;
 		this->pNext = pNext;
-		++count;
 
 		cout << "EConstructor: " << this << endl;
 	}
 	~Element()
 	{
-		--count;
-
 		cout << "EDestructor: " << this << endl;
 	}
 
 	friend class ForwardList;
 };
 
-int Element::count = 0;
-
 class ForwardList
 {
 private:
 	Element* Head;
+	int count;
 
 public:
 	ForwardList()
 	{
 		Head = nullptr;
+		count = 0;
 
 		cout << "FLConstructor: " << this << endl;
 	}
 	~ForwardList()
 	{
+		while (Head != nullptr)
+		{
+			Element* Temp = Head;
+			Head = Head->pNext;
+			delete Temp;
+		}
+
 		cout << "FLDestructor: " << this << endl;
 	}
 
@@ -55,6 +58,8 @@ public:
 		New->pNext = Head;
 
 		Head = New;
+
+		++count;
 	}
 	void push_back(int Data)
 	{
@@ -67,6 +72,8 @@ public:
 		while (Temp->pNext) Temp = Temp->pNext;
 
 		Temp->pNext = New;
+
+		++count;
 	}
 	void pop_front()
 	{
@@ -75,13 +82,16 @@ public:
 		if (Head->pNext == nullptr)
 		{
 			delete Head;
-			Head == nullptr;
+			Head = nullptr;
+			--count;
 			return;
 		}
 
 		Element* Erased = Head;
 		Head = Head->pNext;
 		delete Erased;
+
+		--count;
 	}
 	void pop_back()
 	{
@@ -90,7 +100,8 @@ public:
 		if (Head->pNext == nullptr)
 		{
 			delete Head;
-			Head == nullptr;
+			Head = nullptr;
+			--count;
 			return;
 		}
 
@@ -100,13 +111,15 @@ public:
 
 		delete Temp->pNext;
 		Temp->pNext = nullptr;
+
+		--count;
 	}
 	void insert(int Data, int index)
 	{
 		if (Head == nullptr) return push_front(Data);
 
-		if (index >= Element::count) return push_back(Data);
-		if (index <= Element::count) return push_front(Data);
+		if (index >= count) return push_back(Data);
+		if (index <= 0) return push_front(Data);
 
 		Element* Temp = Head;
 
@@ -116,12 +129,15 @@ public:
 
 		New->pNext = Temp->pNext;
 		Temp->pNext = New;
+
+		++count;
 	}
 	void erase(int index)
 	{
 		if (Head == nullptr) return;
 
-		if (index == 1) return pop_front();
+		if (index >= count - 1) return pop_back();
+		if (index <= 0) return pop_front();
 
 		Element* Temp = Head;
 
@@ -130,6 +146,8 @@ public:
 		Element* Erased = Temp->pNext;
 		Temp->pNext = Erased->pNext;
 		delete Erased;
+
+		--count;
 	}
 
 	void print() const
@@ -141,11 +159,23 @@ public:
 			Temp = Temp->pNext;
 		}
 
-		cout << "Количество элементов списка: " << Element::count << endl;
+		cout << "Количество элементов списка: " << count << endl;
 	}
 };
 
+ForwardList& operator+(const ForwardList& left, const ForwardList& right)
+{
+	ForwardList result;
+	Element* Temp = left.Head;
+
+	while (Temp)
+	{
+
+	}
+}
+
 //#define BASE_CHECK
+#define COUNT_CHECK
 
 int main()
 {
@@ -193,6 +223,7 @@ int main()
 	list.print();
 #endif // BASE_CHECK
 
+#ifdef COUNT_CHECK
 	ForwardList list1;
 
 	list1.push_back(0);
@@ -223,6 +254,16 @@ int main()
 
 	list1.insert(value, index);
 	list1.print();
+
+	cout << "Введите индекс удаляемого элемента: "; cin >> index;
+
+	list1.erase(index);
+	list1.print();
+
+	ForwardList fusion = list1 + list2;
+	fusion.print();
+#endif // COUNT_CHECK
+
 
 	return 0;
 }
