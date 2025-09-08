@@ -71,7 +71,7 @@ public:
 		Head = nullptr;
 		this->size = 0;
 
-		for (int i = 0; i < size; ++i) push_back(rand() % 100);
+		for (int i = 0; i < size; ++i) push_front(rand() % 100);
 	}
 	~ForwardList()
 	{
