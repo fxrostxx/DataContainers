@@ -49,6 +49,10 @@ private:
 	size_t size;
 
 public:
+	int get_size() const
+	{
+		return size;
+	}
 	ForwardList()
 	{
 		Head = nullptr;
@@ -61,6 +65,13 @@ public:
 		*this = other;
 
 		cout << "FLCopyConstructor: " << this << endl;
+	}
+	ForwardList(const int size)
+	{
+		Head = nullptr;
+		this->size = 0;
+
+		for (int i = 0; i < size; ++i) push_back(rand() % 100);
 	}
 	~ForwardList()
 	{
@@ -196,6 +207,23 @@ public:
 		cout << "Общее количество элементов списка: " << Element::global_count << endl;
 	}
 
+	const int& operator[] (int i) const
+	{
+		Element* Temp = Head;
+
+		for (int j = 0; j < i && Temp; ++j, Temp = Temp->pNext);
+
+		return Temp->Data;
+	}
+	int& operator[] (int i)
+	{
+		Element* Temp = Head;
+
+		for (int j = 0; j < i && Temp; ++j, Temp = Temp->pNext);
+
+		return Temp->Data;
+	}
+
 	friend ForwardList operator+(const ForwardList& left, const ForwardList& right);
 };
 
@@ -213,8 +241,9 @@ ForwardList operator+(const ForwardList& left, const ForwardList& right)
 }
 
 //#define BASE_CHECK
-#define OPERATOR_PLUS_CHECK
+//#define OPERATOR_PLUS_CHECK
 //#define PERFORMANCE_CHECK
+#define HW_CHECK
 
 int main()
 {
@@ -324,6 +353,22 @@ int main()
 	cout << "ForwardList filled for " << double(t_end - t_start) / CLOCKS_PER_SEC << " sec. ";
 	system("PAUSE");
 #endif // PERFORMANCE_CHECK
+
+#ifdef HW_CHECK
+	ForwardList list(50000);
+	//list.print();
+
+	cout << delimeter << endl;
+
+	clock_t t_start = clock();
+
+	for (int i = 0; i < list.get_size(); ++i) list[i] = rand() % 100;
+
+	clock_t t_end = clock();
+	cout << "operator[]: " << "completed for " << double(t_end - t_start) / CLOCKS_PER_SEC << " sec." << endl;
+
+	//for (int i = 0; i < list.get_size(); ++i) cout << list[i] << tab;
+#endif // HW_CHECK
 
 
 	return 0;
