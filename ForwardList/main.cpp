@@ -36,11 +36,49 @@ public:
 
 	}
 
+	friend class Iterator;
 	friend class ForwardList;
 	friend ForwardList operator+(const ForwardList& left, const ForwardList& right);
 };
 
 int Element::global_count = 0;
+
+class Iterator
+{
+private:
+	Element* Temp;
+
+public:
+	Iterator(Element* Temp = nullptr) : Temp(Temp)
+	{
+		cout << "ItConstructor: " << this << endl;
+	}
+	~Iterator()
+	{
+		cout << "ItDestructor: " << this << endl;
+	}
+	Iterator& operator++()
+	{
+		Temp = Temp->pNext;
+		return *this;
+	}
+	bool operator==(const Iterator& other) const
+	{
+		return this->Temp == other.Temp;
+	}
+	bool operator!=(const Iterator& other) const
+	{
+		return this->Temp != other.Temp;
+	}
+	int operator*() const
+	{
+		return Temp->Data;
+	}
+	int& operator*()
+	{
+		return Temp->Data;
+	}
+};
 
 class ForwardList
 {
@@ -53,6 +91,16 @@ public:
 	{
 		return size;
 	}
+
+	Iterator begin() const
+	{
+		return Head;
+	}
+	Iterator end() const
+	{
+		return nullptr;
+	}
+
 	ForwardList()
 	{
 		Head = nullptr;
@@ -71,6 +119,12 @@ public:
 		while (size--) push_front(0);
 
 		cout << "FLSizeConstructor: " << this << endl;
+	}
+	ForwardList(const std::initializer_list<int>& il) : ForwardList()
+	{
+		for (int const* it = il.begin(); it != il.end(); ++it) push_back(*it);
+
+		cout << "FLitConstructor: " << this << endl;
 	}
 	ForwardList(ForwardList&& other) : ForwardList()
 	{
@@ -275,12 +329,20 @@ ForwardList operator+(const ForwardList& left, const ForwardList& right)
 	return result;
 }
 
+void Print(int arr[])
+{
+	cout << typeid(arr).name() << endl;
+	cout << sizeof(arr) / sizeof(arr[0]) << endl;
+}
+
+
 //#define BASE_CHECK
 //#define OPERATOR_PLUS_CHECK
 //#define PERFORMANCE_CHECK
 //#define SUBSCRIPT_OPERATOR_CHECK
 //#define COPY_SEMANTIC_PERFORMANCE_CHECK
-#define MOVE_SEMANTIC_CHECK
+//#define MOVE_SEMANTIC_CHECK
+//#define RANGE_BASED_FOR_ARRAY
 
 int main()
 {
@@ -457,6 +519,20 @@ int main()
 	cout << "Списки соединены за " << double(t_end - t_start) / CLOCKS_PER_SEC << " sec." << endl;
 #endif // MOVE_SEMANTIC_CHECK
 
+#ifdef RANGE_BASED_FOR_ARRAY
+	int arr[]{ 3, 5, 8, 13, 21 };
+
+	cout << sizeof(arr) << endl;
+	cout << sizeof(arr[0]) << endl;
+
+	for (int i : arr) cout << i << tab; cout << endl;
+	Print(arr);
+#endif // RANGE_BASED_FOR_ARRAY
+
+	ForwardList list = { 3, 5, 8, 13, 21 };
+	list.print();
+
+	for (int i : list) cout << i << tab; cout << endl;
 
 	return 0;
 }
