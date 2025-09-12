@@ -62,6 +62,12 @@ public:
 		Temp = Temp->pNext;
 		return *this;
 	}
+	Iterator operator++(int)
+	{
+		Iterator old = *this;
+		Temp = Temp->pNext;
+		return old;
+	}
 	bool operator==(const Iterator& other) const
 	{
 		return this->Temp == other.Temp;
@@ -343,6 +349,7 @@ void Print(int arr[])
 //#define COPY_SEMANTIC_PERFORMANCE_CHECK
 //#define MOVE_SEMANTIC_CHECK
 //#define RANGE_BASED_FOR_ARRAY
+#define ITERATORS_CHECK
 
 int main()
 {
@@ -529,10 +536,17 @@ int main()
 	Print(arr);
 #endif // RANGE_BASED_FOR_ARRAY
 
+#ifdef ITERATORS_CHECK
 	ForwardList list = { 3, 5, 8, 13, 21 };
 	list.print();
 
 	for (int i : list) cout << i << tab; cout << endl;
+
+	cout << delimeter << endl;
+
+	for (Iterator it = list.begin(); it != list.end(); ++it) cout << *it << tab;
+	cout << endl;
+#endif // ITERATORS_CHECK
 
 	return 0;
 }
