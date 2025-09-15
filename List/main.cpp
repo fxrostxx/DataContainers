@@ -25,19 +25,183 @@ private:
 			cout << "EDestructor: " << this << endl;
 		}
 		friend class List;
-	} *Head, *Tail;
+		friend List operator+(const List& left, const List& right);
+	} *Head, * Tail;
 	size_t size;
 public:
+	class Iterator
+	{
+	private:
+		Element* Temp;
+	public:
+		Iterator(Element* Temp = nullptr) : Temp(Temp)
+		{
+#ifdef DEBUG
+			cout << "ItConstructor: " << this << endl;
+#endif // DEBUG
+		}
+		~Iterator()
+		{
+#ifdef DEBUG
+			cout << "ItDestructor: " << this << endl;
+#endif // DEBUG
+		}
+
+		Iterator& operator++()
+		{
+			Temp = Temp->pNext;
+			return *this;
+		}
+		Iterator operator++(int)
+		{
+			Iterator old = *this;
+			Temp = Temp->pNext;
+			return old;
+		}
+		Iterator& operator--()
+		{
+			Temp = Temp->pPrev;
+			return *this;
+		}
+		Iterator operator--(int)
+		{
+			Iterator old = *this;
+			Temp = Temp->pPrev;
+			return old;
+		}
+		bool operator==(const Iterator& other) const
+		{
+			return this->Temp == other.Temp;
+		}
+		bool operator!=(const Iterator& other) const
+		{
+			return this->Temp != other.Temp;
+		}
+		int operator*() const
+		{
+			return Temp->Data;
+		}
+		int& operator*()
+		{
+			return Temp->Data;
+		}
+	};
+	class ReverseIterator
+	{
+	private:
+		Element* Temp;
+	public:
+		ReverseIterator(Element* Temp = nullptr) : Temp(Temp) {}
+		~ReverseIterator() {}
+
+		ReverseIterator& operator++()
+		{
+			Temp = Temp->pPrev;
+			return *this;
+		}
+		ReverseIterator operator++(int)
+		{
+			ReverseIterator old = *this;
+			Temp = Temp->pPrev;
+			return old;
+		}
+		ReverseIterator& operator--()
+		{
+			Temp = Temp->pNext;
+			return *this;
+		}
+		ReverseIterator operator--(int)
+		{
+			ReverseIterator old = *this;
+			Temp = Temp->pNext;
+			return old;
+		}
+		bool operator==(const ReverseIterator& other)
+		{
+			return this->Temp == other.Temp;
+		}
+		bool operator!=(const ReverseIterator& other)
+		{
+			return this->Temp != other.Temp;
+		}
+		int operator*() const
+		{
+			return Temp->Data;
+		}
+		int& operator*()
+		{
+			return Temp->Data;
+		}
+	};
+	const Iterator begin() const
+	{
+		return Head;
+	}
+	const Iterator end() const
+	{
+		return nullptr;
+	}
+	const ReverseIterator rbegin() const
+	{
+		return Tail;
+	}
+	const ReverseIterator rend() const
+	{
+		return nullptr;
+	}
+
 	List()
 	{
 		Head = Tail = nullptr;
 		size = 0;
 		cout << "LConstructor: " << this << endl;
 	}
+	List(int size) : List()
+	{
+		while (size--) push_front(0);
+		cout << "LSizeConstructor: " << this << endl;
+	}
+	List(const List& other) : List()
+	{
+		*this = other;
+		cout << "LCopyConstructor: " << this << endl;
+	}
+	List(List&& other) : List()
+	{
+		*this = std::move(other);
+		cout << "LMoveConstructor: " << this << endl;
+	}
+	List(const std::initializer_list<int>& il) : List()
+	{
+		for (int const* it = il.begin(); it != il.end(); ++it) push_back(*it);
+		cout << "LitConstructor: " << this << endl;
+	}
 	~List()
 	{
 		while (Head) pop_front();
 		cout << "LDestructor: " << this << endl;
+	}
+
+	List& operator=(const List& other)
+	{
+		if (this == &other) return *this;
+		while (Head) pop_front();
+		for (Element* Temp = other.Head; Temp; Temp = Temp->pNext) push_back(Temp->Data);
+		cout << "LCopyAssignment: " << this << endl;
+		return *this;
+	}
+	List& operator=(List&& other)
+	{
+		if (this == &other) return *this;
+		while (Head) pop_front();
+		this->Head = other.Head;
+		this->Tail = other.Tail;
+		this->size = other.size;
+		other.Head = nullptr;
+		other.Tail = nullptr;
+		other.size = 0;
+		cout << "LMoveAssignment: " << this << endl;
+		return *this;
 	}
 
 	void push_front(int Data)
@@ -98,15 +262,9 @@ public:
 	}
 	void insert(int Data, int index)
 	{
-		if ((!Head && !Tail)) return push_front(Data);
-		if (index < 0) return;
-		if (index >= size) return push_back(Data);
-		if (index == 0) return push_front(Data);
-		if (Head == Tail)
-		{
-			delete Head;
-			Head = Tail = new Element(Data);
-		}
+		if (index < 0 || index > size) return;
+		if (index == 0 || size == 0) return push_front(Data);
+		if (index == size) return push_back(Data);
 		Element* Temp;
 		if (index < size / 2)
 		{
@@ -125,8 +283,36 @@ public:
 		Temp->pPrev = New;
 		++size;
 	}
+	void erase(int index)
+	{
+		if (index < 0 || index >= size) return;
+		if (Head == Tail)
+		{
+			delete Head;
+			Head = Tail = nullptr;
+			--size;
+			return;
+		}
+		if (index == 0) return pop_front();
+		if (index == size - 1) return pop_back();
+		Element* Temp;
+		if (index < size / 2)
+		{
+			Temp = Head;
+			for (int i = 0; i < index; ++i, Temp = Temp->pNext);
+		}
+		else
+		{
+			Temp = Tail;
+			for (int i = 0; i < size - index - 1; ++i, Temp = Temp->pPrev);
+		}
+		Temp->pPrev->pNext = Temp->pNext;
+		Temp->pNext->pPrev = Temp->pPrev;
+		delete Temp;
+		--size;
+	}
 
-	void print()
+	void print() const
 	{
 		cout << delimeter << endl;
 		cout << "Head: " << Head << endl;
@@ -136,7 +322,7 @@ public:
 		cout << "Количество элементов списка: " << size;
 		cout << delimeter << endl;
 	}
-	void reverse_print()
+	void reverse_print() const
 	{
 		cout << delimeter << endl;
 		cout << "Tail: " << Tail << endl;
@@ -146,10 +332,19 @@ public:
 		cout << "Количество элементов списка: " << size;
 		cout << delimeter << endl;
 	}
+	friend List operator+(const List& left, const List& right);
 };
 
-#define BASE_CHECK
-//#define HOMEWORK
+List operator+(const List& left, const List& right)
+{
+	List result = left;
+	for (List::Iterator it = right.begin(); it != right.end(); ++it)
+		result.push_back(*it);
+	return result;
+}
+
+//#define BASE_CHECK
+#define HOMEWORK
 
 int main()
 {
@@ -173,16 +368,32 @@ int main()
 	list1.insert(value, index);
 	list1.print();
 	list1.reverse_print();
+
+	cout << "Введите индекс удаляемого элемента: "; cin >> index;
+	list1.erase(index);
+	list1.print();
+	list1.reverse_print();
 #endif // BASE_CHECK
 
 #ifdef HOMEWORK
 	List list1 = { 3, 5, 8, 13, 21 };
 	List list2 = { 34, 55, 89 };
+	list1.print();
+	list2.print();
+
 	List list3 = list1 + list2;
+	list3.print();
 
 	for (int i : list1) cout << i << tab; cout << endl;
 	for (int i : list2) cout << i << tab; cout << endl;
 	for (int i : list3) cout << i << tab; cout << endl;
+
+	for (List::Iterator it = list1.begin(); it != list1.end(); ++it)
+		cout << *it << tab;
+	cout << endl;
+	for (List::ReverseIterator it = list1.rbegin(); it != list1.rend(); ++it)
+		cout << *it << tab;
+	cout << endl;
 #endif // HOMEWORK
 
 	return 0;
