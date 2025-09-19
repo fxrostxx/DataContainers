@@ -12,9 +12,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "List", "List\List.vcxproj", "{51B7C501-CCCC-429E-ACBE-4C752402A223}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
-	ProjectSection(SolutionItems) = preProject
-		HW_ReadMe.txt = HW_ReadMe.txt
-	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Recursion", "Recursion\Recursion.vcxproj", "{17B4EB98-083D-4433-A800-5E943AB63776}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -56,6 +55,14 @@ Global
 		{51B7C501-CCCC-429E-ACBE-4C752402A223}.Release|x64.Build.0 = Release|x64
 		{51B7C501-CCCC-429E-ACBE-4C752402A223}.Release|x86.ActiveCfg = Release|Win32
 		{51B7C501-CCCC-429E-ACBE-4C752402A223}.Release|x86.Build.0 = Release|Win32
+		{17B4EB98-083D-4433-A800-5E943AB63776}.Debug|x64.ActiveCfg = Debug|x64
+		{17B4EB98-083D-4433-A800-5E943AB63776}.Debug|x64.Build.0 = Debug|x64
+		{17B4EB98-083D-4433-A800-5E943AB63776}.Debug|x86.ActiveCfg = Debug|Win32
+		{17B4EB98-083D-4433-A800-5E943AB63776}.Debug|x86.Build.0 = Debug|Win32
+		{17B4EB98-083D-4433-A800-5E943AB63776}.Release|x64.ActiveCfg = Release|x64
+		{17B4EB98-083D-4433-A800-5E943AB63776}.Release|x64.Build.0 = Release|x64
+		{17B4EB98-083D-4433-A800-5E943AB63776}.Release|x86.ActiveCfg = Release|Win32
+		{17B4EB98-083D-4433-A800-5E943AB63776}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
