@@ -1,4 +1,4 @@
-#include <iostream>
+ï»¿#include <iostream>
 using std::cin;
 using std::cout;
 using std::endl;
@@ -13,21 +13,21 @@ int main()
 	setlocale(LC_ALL, "");
 
 	int n;
-	cout << "Ââåäèòå íîìåð ýòàæà: "; cin >> n;
+	cout << "Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ð½Ð¾Ð¼ÐµÑ€ ÑÑ‚Ð°Ð¶Ð°: "; cin >> n;
 	elevator(n);
 
-	cout << "Ââåäèòå ÷èñëî: "; cin >> n;
+	cout << "Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ñ‡Ð¸ÑÐ»Ð¾: "; cin >> n;
 	cout << n << "! = " << Factorial(n) << endl;
 
 	int power;
-	cout << "Ââåäèòå ÷èñëî: "; cin >> n;
-	cout << "Ââåäèòå ñòåïåíü: "; cin >> power;
+	cout << "Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ñ‡Ð¸ÑÐ»Ð¾: "; cin >> n;
+	cout << "Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ ÑÑ‚ÐµÐ¿ÐµÐ½ÑŒ: "; cin >> power;
 	cout << n << "^" << power << " = " << Power(n, power) << endl;
 
 	unsigned int a;
 	while (true)
 	{
-		cout << "Ââåäèòå ÷èñëî äî êîòîðîãî âûâåñòè ðÿä Ôèáîíà÷÷è: "; cin >> a;
+		cout << "Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ Ñ‡Ð¸ÑÐ»Ð¾ Ð´Ð¾ ÐºÐ¾Ñ‚Ð¾Ñ€Ð¾Ð³Ð¾ Ð²Ñ‹Ð²ÐµÑÑ‚Ð¸ Ñ€ÑÐ´ Ð¤Ð¸Ð±Ð¾Ð½Ð°Ñ‡Ñ‡Ð¸: "; cin >> a;
 		Fibonacci(a);
 		cout << endl;
 	}
@@ -39,12 +39,12 @@ void elevator(int floor)
 {
 	if (floor == 0)
 	{
-		cout << "Âû â ïîäâàëå" << endl;
+		cout << "Ð’Ñ‹ Ð² Ð¿Ð¾Ð´Ð²Ð°Ð»Ðµ" << endl;
 		return;
 	}
-	cout << "Âû íà " << floor << " ýòàæå" << endl;
+	cout << "Ð’Ñ‹ Ð½Ð° " << floor << " ÑÑ‚Ð°Ð¶Ðµ" << endl;
 	elevator(floor - 1);
-	cout << "Âû íà " << floor << " ýòàæå" << endl;
+	cout << "Ð’Ñ‹ Ð½Ð° " << floor << " ÑÑ‚Ð°Ð¶Ðµ" << endl;
 }
 unsigned long long int Factorial(int n)
 {
