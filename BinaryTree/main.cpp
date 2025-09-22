@@ -7,7 +7,7 @@ using std::endl;
 
 class Tree
 {
-private:
+protected:
 	class Element
 	{
 	private:
@@ -24,6 +24,7 @@ private:
 		{
 			cout << "EDestructor: " << this << endl;
 		}
+		friend class UniqueTree;
 		friend class Tree;
 	} *Root;
 public:
@@ -40,7 +41,7 @@ public:
 		clear(Root);
 		cout << "TDestructor: " << this << endl;
 	}
-	void insert(int Data, Element* Root)
+	virtual void insert(int Data, Element* Root)
 	{
 		if (!this->Root) this->Root = new Element(Data);
 		if (!Root) return;
@@ -153,6 +154,13 @@ public:
 		else return (double)Sum(Root) / count(Root);*/
 		return !Root ? 0 : (double)Sum(Root) / count(Root);
 	}
+	bool find(int Data, Element* Root)
+	{
+		if (!Root) return false;
+		if (Root->Data == Data) return true;
+		if (Data < Root->Data) return find(Data, Root->pLeft);
+		else return find(Data, Root->pRight);
+	}
 	void print(Element* Root) const
 	{
 		if (!Root) return;
@@ -162,10 +170,35 @@ public:
 	}
 };
 
+class UniqueTree : public Tree
+{
+public:
+	void insert(int Data, Element* Root) override
+	{
+		if (!this->Root) this->Root = new Element(Data);
+		if (!Root) return;
+		if (Data < Root->Data)
+		{
+			if (!Root->pLeft) Root->pLeft = new Element(Data);
+			else insert(Data, Root->pLeft);
+		}
+		else if (Data > Root->Data)
+		{
+			if (!Root->pRight) Root->pRight = new Element(Data);
+			else insert(Data, Root->pRight);
+		}
+		else return;
+	}
+};
+
+//#define TREE_TEST
+#define U_TREE_TEST
+
 int main()
 {
 	setlocale(LC_ALL, "");
 
+#ifdef TREE_TEST
 	int n;
 	Tree tree;
 
@@ -183,6 +216,24 @@ int main()
 	tree.erase(n, tree.get_Root());
 	tree.print(tree.get_Root());
 	cout << endl;
+	cout << "Введите значение искомого элемента: "; cin >> n;
+	cout << (tree.find(n, tree.get_Root()) ? "Элемент найден" : "Элемент не найден") << endl;
+	cout << endl;
+#endif // TREE_TEST
+
+
+#ifdef U_TREE_TEST
+	int n;
+	UniqueTree u_tree;
+	cout << "Введите количество элементов: "; cin >> n;
+	for (int i = 0; i < n; ++i) u_tree.insert(rand() % 100, u_tree.get_Root());
+	u_tree.print(u_tree.get_Root()); cout << endl;
+	cout << "Введите значение добавляемого элемента: "; cin >> n;
+	cout << (u_tree.find(n, u_tree.get_Root()) ? "Элемент уже есть в дереве. Пропуск." : "Элемент добавлен.") << endl;
+	u_tree.insert(n, u_tree.get_Root());
+	u_tree.print(u_tree.get_Root()); cout << endl;
+#endif // U_TREE_TEST
+
 
 	return 0;
 }
