@@ -56,7 +56,7 @@ public:
 			else insert(Data, Root->pRight);
 		}
 	}
-	void erase(int Data, Element* Root)
+	void erase(int Data, Element* Root) const
 	{
 		if (!this->Root || !Root) return;
 		if (Data < Root->Data)
@@ -112,7 +112,7 @@ public:
 			else erase(Data, Root->pRight);
 		}
 	}
-	void clear(Element* Root)
+	void clear(Element* Root) const
 	{
 		if (!Root) return;
 		clear(Root->pLeft);
@@ -120,7 +120,7 @@ public:
 		delete Root;
 		Root = nullptr;
 	}
-	int minValue(Element* Root)
+	int minValue(Element* Root) const
 	{
 		/*if (!Root) return INT_MIN;
 		if (!this->Root) return;
@@ -128,7 +128,7 @@ public:
 		else return minValue(Root->pLeft);*/
 		return !Root ? INT_MIN : !Root->pLeft ? Root->Data : minValue(Root->pLeft);
 	}
-	int maxValue(Element* Root)
+	int maxValue(Element* Root) const
 	{
 		/*if (!Root) return INT_MAX;
 		if (!this->Root) return;
@@ -136,13 +136,13 @@ public:
 		else return maxValue(Root->pRight);*/
 		return !Root ? INT_MAX : !Root->pRight ? Root->Data : maxValue(Root->pRight);
 	}
-	int count(Element* Root)
+	int count(Element* Root) const
 	{
 		/*if (!Root) return 0;
 		else return count(Root->pLeft) + count(Root->pRight) + 1;*/
 		return !Root ? 0 : count(Root->pLeft) + count(Root->pRight) + 1;
 	}
-	int Sum(Element* Root)
+	int Sum(Element* Root) const
 	{
 		/*if (!Root) return 0;
 		else return Sum(Root->pLeft) + Sum(Root->pRight) + Root->Data;*/
@@ -154,7 +154,7 @@ public:
 		else return (double)Sum(Root) / count(Root);*/
 		return !Root ? 0 : (double)Sum(Root) / count(Root);
 	}
-	bool find(int Data, Element* Root)
+	bool find(int Data, Element* Root) const
 	{
 		if (!Root) return false;
 		if (Root->Data == Data) return true;
