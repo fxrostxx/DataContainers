@@ -1,10 +1,11 @@
 ﻿#include <iostream>
+#include <ctime>
 using std::cin;
 using std::cout;
 using std::endl;
 
 #define tab "\t"
-#define DEBUG
+//#define DEBUG
 
 class Tree
 {
@@ -82,6 +83,10 @@ public:
 	double avg() const
 	{
 		return (double)sum(Root) / count(Root);
+	}
+	int depth() const
+	{
+		return depth(Root);
 	}
 	void print() const
 	{
@@ -163,6 +168,11 @@ private:
 	{
 		return !Root ? 0 : sum(Root->pLeft) + sum(Root->pRight) + Root->Data;
 	}
+	int depth(Element* Root) const
+	{
+		return !Root ? 0 : depth(Root->pLeft) + 1 > depth(Root->pRight) + 1 ?
+			   depth(Root->pLeft) + 1 : depth(Root->pRight) + 1;
+	}
 	void print(Element* Root) const
 	{
 		if (!Root) return;
@@ -197,7 +207,16 @@ public:
 	}
 };
 
+template<typename T> void measure_performance(const char message[], T (Tree::*function)() const, const Tree& tree)
+{
+	clock_t start = clock();
+	T result = (tree.*function)();
+	clock_t end = clock();
+	cout << message << result << ", вычислено за " << double(end - start) / CLOCKS_PER_SEC << " сек" << endl;
+}
+
 //#define BASE_CHECK
+//#define ERASE_CHECK
 
 int main()
 {
@@ -228,20 +247,41 @@ int main()
 	cout << "Среднее арифметическое элементов дерева: " << u_tree.avg() << endl;
 #endif // BASE_CHECK
 
+#ifdef ERASE_CHECK
 	Tree tree =
 	{
 					50,
 
 			25,				75,
 
-		16,		32,		58,		85
+		16,		32,		58,		85,
+
+									91,
+
+										98
 	};
 	tree.print();
 
 	int n;
-	cout << "Введите значение удаляемого элемента: "; cin >> n;
-	tree.erase(n);
+	//cout << "Введите значение удаляемого элемента: "; cin >> n;
+	//tree.erase(n);
 	tree.print();
+	cout << "Глубина дерева: " << tree.depth() << endl;
+#endif // ERASE_CHECK
+
+	int n;
+	Tree tree;
+
+	cout << "Введите количество элементов: "; cin >> n;
+	for (int i = 0; i < n; ++i) tree.insert(rand() % 100);
+	//tree.print();
+
+	measure_performance("Минимальное значение в дереве: ", &Tree::minValue, tree);
+	measure_performance("Максимальное значение в дереве: ", &Tree::maxValue, tree);
+	measure_performance("Количество элементов дерева: ", &Tree::count, tree);
+	measure_performance("Сумма элементов дерева: ", &Tree::sum, tree);
+	measure_performance("Среднее арифметическое элементов дерева: ", &Tree::avg, tree);
+	measure_performance("Глубина дерева: ", &Tree::depth, tree);
 
 	return 0;
 }
