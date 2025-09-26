@@ -170,8 +170,10 @@ private:
 	}
 	int depth(Element* Root) const
 	{
-		return !Root ? 0 : depth(Root->pLeft) + 1 > depth(Root->pRight) + 1 ?
-			   depth(Root->pLeft) + 1 : depth(Root->pRight) + 1;
+		if (!Root) return 0;
+		int l_depth = depth(Root->pLeft) + 1;
+		int r_depth = depth(Root->pRight) + 1;
+		return l_depth < r_depth ? r_depth : l_depth;
 	}
 	void print(Element* Root) const
 	{
@@ -217,6 +219,7 @@ template<typename T> void measure_performance(const char message[], T (Tree::*fu
 
 //#define BASE_CHECK
 //#define ERASE_CHECK
+#define PERFORMACE_CHECK
 
 int main()
 {
@@ -269,6 +272,7 @@ int main()
 	cout << "Глубина дерева: " << tree.depth() << endl;
 #endif // ERASE_CHECK
 
+#ifdef PERFORMACE_CHECK
 	int n;
 	Tree tree;
 
@@ -282,6 +286,8 @@ int main()
 	measure_performance("Сумма элементов дерева: ", &Tree::sum, tree);
 	measure_performance("Среднее арифметическое элементов дерева: ", &Tree::avg, tree);
 	measure_performance("Глубина дерева: ", &Tree::depth, tree);
+#endif // PERFORMACE_CHECK
+
 
 	return 0;
 }
