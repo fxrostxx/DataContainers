@@ -88,6 +88,10 @@ public:
 	{
 		return depth(Root);
 	}
+	void balance()
+	{
+		balance(Root);
+	}
 	void depth_print(int depth, int width = 4) const
 	{
 		depth_print(depth, Root, width);
@@ -183,6 +187,32 @@ private:
 		int l_depth = depth(Root->pLeft) + 1;
 		int r_depth = depth(Root->pRight) + 1;
 		return l_depth < r_depth ? r_depth : l_depth;
+	}
+	void balance(Element*& Root)
+	{
+		if (!Root) return;
+		int size = count(Root);
+		Element** elements = new Element*[size];
+		int index = 0;
+		TreeToArray(Root, elements, index);
+		Root = ArrayToTree(elements, 0, size - 1);
+		delete[] elements;
+	}
+	void TreeToArray(Element* Root, Element** elements, int& index)
+	{
+		if (!Root) return;
+		TreeToArray(Root->pLeft, elements, index);
+		elements[index++] = Root;
+		TreeToArray(Root->pRight, elements, index);
+	}
+	Element* ArrayToTree(Element** elements, int start, int end)
+	{
+		if (start > end) return nullptr;
+		int mid = (start + end) / 2;
+		Element* Root = elements[mid];
+		Root->pLeft = ArrayToTree(elements, start, mid - 1);
+		Root->pRight = ArrayToTree(elements, mid + 1, end);
+		return Root;
 	}
 	void depth_print(int depth, Element* Root, int width) const
 	{
@@ -332,6 +362,9 @@ int main()
 	tree.print();
 	cout << "Глубина дерева: " << tree.depth() << endl;
 	//tree.depth_print(2);
+	tree.tree_print();
+
+	tree.balance();
 	tree.tree_print();
 #endif // DEPTH_CHECK
 
