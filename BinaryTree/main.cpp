@@ -91,6 +91,8 @@ public:
 	void balance()
 	{
 		balance(Root);
+		cout << "Left count: " << count(Root->pLeft) << endl;
+		cout << "Right count: " << count(Root->pRight) << endl;
 	}
 	void depth_print(int depth, int width = 4) const
 	{
@@ -191,28 +193,24 @@ private:
 	void balance(Element*& Root)
 	{
 		if (!Root) return;
-		int size = count(Root);
-		Element** elements = new Element*[size];
-		int index = 0;
-		TreeToArray(Root, elements, index);
-		Root = ArrayToTree(elements, 0, size - 1);
-		delete[] elements;
-	}
-	void TreeToArray(Element* Root, Element** elements, int& index)
-	{
-		if (!Root) return;
-		TreeToArray(Root->pLeft, elements, index);
-		elements[index++] = Root;
-		TreeToArray(Root->pRight, elements, index);
-	}
-	Element* ArrayToTree(Element** elements, int start, int end)
-	{
-		if (start > end) return nullptr;
-		int mid = (start + end) / 2;
-		Element* Root = elements[mid];
-		Root->pLeft = ArrayToTree(elements, start, mid - 1);
-		Root->pRight = ArrayToTree(elements, mid + 1, end);
-		return Root;
+		if (abs(count(Root->pLeft) - count(Root->pRight)) < 2) return;
+		if (count(Root->pLeft) < count(Root->pRight))
+		{
+			if (Root->pLeft) insert(Root->Data, Root->pLeft);
+			else Root->pLeft = new Element(Root->Data);
+			Root->Data = minValue(Root->pRight);
+			erase(minValue(Root->pRight), Root->pRight);
+		}
+		if (count(Root->pLeft) > count(Root->pRight))
+		{
+			if (Root->pRight) insert(Root->Data, Root->pRight);
+			else Root->pRight = new Element(Root->Data);
+			Root->Data = minValue(Root->pLeft);
+			erase(minValue(Root->pLeft), Root->pLeft);
+		}
+		balance(Root->pLeft);
+		balance(Root->pRight);
+		balance(Root);
 	}
 	void depth_print(int depth, Element* Root, int width) const
 	{
@@ -355,17 +353,19 @@ int main()
 
 		16,		32,		58,		85,
 
-									91,
+									//91,
 
-										98
+										//98
 	};
 	tree.print();
 	cout << "Глубина дерева: " << tree.depth() << endl;
 	//tree.depth_print(2);
 	tree.tree_print();
 
-	tree.balance();
-	tree.tree_print();
+	Tree tree2 = { 55, 34, 21, 13, 8, 5, 3 };
+	tree2.tree_print();
+	tree2.balance();
+	tree2.tree_print();
 #endif // DEPTH_CHECK
 
 
