@@ -59,11 +59,13 @@ public:
 	}
 	Iterator& operator++()
 	{
+		if (Temp == nullptr) throw std::runtime_error("Incrementing null pointer");
 		Temp = Temp->pNext;
 		return *this;
 	}
 	Iterator operator++(int)
 	{
+		if (Temp == nullptr) throw std::runtime_error("Incrementing null pointer");
 		Iterator old = *this;
 		Temp = Temp->pNext;
 		return old;
@@ -78,10 +80,12 @@ public:
 	}
 	int operator*() const
 	{
+		if (Temp == nullptr) throw std::runtime_error("Dereferencing null pointer");
 		return Temp->Data;
 	}
 	int& operator*()
 	{
+		if (Temp == nullptr) throw std::runtime_error("Dereferencing null pointer");
 		return Temp->Data;
 	}
 };
@@ -177,6 +181,7 @@ public:
 	}
 	int operator[] (int index) const
 	{
+		if (index < 0 || index >= size) throw std::out_of_range("Index out of range");
 		Element* Temp = Head;
 
 		for (int i = 0; i < index; ++i) Temp = Temp->pNext;
@@ -185,6 +190,7 @@ public:
 	}
 	int& operator[] (int index)
 	{
+		if (index < 0 || index >= size) throw std::out_of_range("Index out of range");
 		Element* Temp = Head;
 
 		for (int i = 0; i < index; ++i) Temp = Temp->pNext;
@@ -220,7 +226,7 @@ public:
 	}
 	void pop_front()
 	{
-		if (Head == nullptr) return;
+		if (Head == nullptr) throw std::runtime_error("Can't pop from empty list");
 
 		if (Head->pNext == nullptr)
 		{
@@ -238,7 +244,8 @@ public:
 	}
 	void pop_back()
 	{
-		if (Head == nullptr || Head->pNext == nullptr) return pop_front();
+		if (Head == nullptr) throw std::runtime_error("Can't pop from empty list");
+		if (Head->pNext == nullptr) return pop_front();
 
 		Element* Temp = Head;
 
@@ -251,10 +258,12 @@ public:
 	}
 	void insert(int Data, int index)
 	{
+		if (index < 0 || index > size) throw std::out_of_range("Index out of range");
+
 		if (Head == nullptr) return push_front(Data);
 
-		if (index >= size) return push_back(Data);
-		if (index <= 0) return push_front(Data);
+		if (index == size) return push_back(Data);
+		if (index == 0) return push_front(Data);
 
 		Element* Temp = Head;
 
@@ -270,10 +279,11 @@ public:
 	}
 	void erase(int index)
 	{
-		if (Head == nullptr) return;
+		if (Head == nullptr) throw std::runtime_error("Can't erase from empty list");
+		if (index < 0 || index >= size) throw std::runtime_error("Index out of range");
 
-		if (index >= size - 1) return pop_back();
-		if (index <= 0) return pop_front();
+		if (index == size - 1) return pop_back();
+		if (index == 0) return pop_front();
 
 		Element* Temp = Head;
 

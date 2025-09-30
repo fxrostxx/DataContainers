@@ -45,6 +45,7 @@ private:
 		}
 		int operator*() const
 		{
+			if (Temp == nullptr) throw std::runtime_error("Dereferencing null pointer");
 			return Temp->Data;
 		}
 	};
@@ -58,22 +59,26 @@ public:
 
 		ConstIterator& operator++()
 		{
+			if (Temp == nullptr) throw std::runtime_error("Incrementing null pointer");
 			Temp = Temp->pNext;
 			return *this;
 		}
 		ConstIterator operator++(int)
 		{
+			if (Temp == nullptr) throw std::runtime_error("Incrementing null pointer");
 			ConstIterator old = *this;
 			Temp = Temp->pNext;
 			return old;
 		}
 		ConstIterator& operator--()
 		{
+			if (Temp == nullptr) throw std::runtime_error("Decrementing null pointer");
 			Temp = Temp->pPrev;
 			return *this;
 		}
 		ConstIterator operator--(int)
 		{
+			if (Temp == nullptr) throw std::runtime_error("Decrementing null pointer");
 			ConstIterator old = *this;
 			Temp = Temp->pPrev;
 			return old;
@@ -86,6 +91,7 @@ public:
 		~Iterator() {}
 		int& operator*()
 		{
+			if (Temp == nullptr) throw std::runtime_error("Dereferencing null pointer");
 			return Temp->Data;
 		}
 	};
@@ -97,22 +103,26 @@ public:
 
 		ConstReverseIterator& operator++()
 		{
+			if (Temp == nullptr) throw std::runtime_error("Incrementing null pointer");
 			Temp = Temp->pPrev;
 			return *this;
 		}
 		ConstReverseIterator operator++(int)
 		{
+			if (Temp == nullptr) throw std::runtime_error("Incrementing null pointer");
 			ConstReverseIterator old = *this;
 			Temp = Temp->pPrev;
 			return old;
 		}
 		ConstReverseIterator& operator--()
 		{
+			if (Temp == nullptr) throw std::runtime_error("Decrementing null pointer");
 			Temp = Temp->pNext;
 			return *this;
 		}
 		ConstReverseIterator operator--(int)
 		{
+			if (Temp == nullptr) throw std::runtime_error("Decrementing null pointer");
 			ConstReverseIterator old = *this;
 			Temp = Temp->pNext;
 			return old;
@@ -124,6 +134,7 @@ public:
 		ReverseIterator(Element* Temp) : ConstReverseIterator(Temp) {}
 		int& operator*()
 		{
+			if (Temp == nullptr) throw std::runtime_error("Dereferencing null pointer");
 			return Temp->Data;
 		}
 	};
@@ -240,7 +251,7 @@ public:
 	}
 	void pop_front()
 	{
-		if (!Head && !Tail) return;
+		if (!Head && !Tail) throw std::runtime_error("Can't pop from empty list");
 		if (Head == Tail)
 		{
 			delete Head;
@@ -256,7 +267,7 @@ public:
 	}
 	void pop_back()
 	{
-		if (!Head && !Tail) return;
+		if (!Head && !Tail) throw std::runtime_error("Can't pop from empty list");
 		if (Head == Tail)
 		{
 			delete Head;
@@ -272,7 +283,7 @@ public:
 	}
 	void insert(int Data, int index)
 	{
-		if (index < 0 || index > size) return;
+		if (index < 0 || index > size) throw std::runtime_error("Index out of range");
 		if (index == 0 || size == 0) return push_front(Data);
 		if (index == size) return push_back(Data);
 		Element* Temp;
@@ -295,7 +306,7 @@ public:
 	}
 	void erase(int index)
 	{
-		if (index < 0 || index >= size) return;
+		if (index < 0 || index >= size) throw std::runtime_error("Index out of range");
 		if (Head == Tail)
 		{
 			delete Head;
