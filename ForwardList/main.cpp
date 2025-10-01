@@ -355,11 +355,11 @@ void Print(int arr[])
 //#define BASE_CHECK
 //#define OPERATOR_PLUS_CHECK
 //#define PERFORMANCE_CHECK
-//#define SUBSCRIPT_OPERATOR_CHECK
+#define SUBSCRIPT_OPERATOR_CHECK
 //#define COPY_SEMANTIC_PERFORMANCE_CHECK
 //#define MOVE_SEMANTIC_CHECK
 //#define RANGE_BASED_FOR_ARRAY
-#define ITERATORS_CHECK
+//#define ITERATORS_CHECK
 
 int main()
 {
@@ -482,10 +482,17 @@ int main()
 
 	cout << "Список заполнен за " << double(t_end - t_start) / CLOCKS_PER_SEC << " sec." << endl;
 
-	system("PAUSE");
+	//system("PAUSE");
 
-	for (int i = 0; i < list.get_size(); ++i) cout << list[i] << tab;
-	cout << endl;
+	try
+	{
+		for (int i = 0; i < list.get_size() * 2; ++i) cout << list[i] << tab;
+		cout << endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cerr << e.what() << endl;
+	}
 #endif // SUBSCRIPT_OPERATOR_CHECK
 
 #ifdef COPY_SEMANTIC_PERFORMANCE_CHECK
